@@ -6,9 +6,9 @@ const connectDB = async () => {
     })
 
     try {
-        await mongoose.connect(process.env.MONGODB_URI)
+        await mongoose.connect(String(process.env.MONGODB_URI).trim());
     } catch (error) {
-        console.log("connection error: ", error)
+        console.log("connection error from mongodb.js file: ", error)
     }
     
 }
