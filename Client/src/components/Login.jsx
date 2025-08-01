@@ -24,7 +24,7 @@ const Login = () => {
           if(data.success){
             setToken(data.token)
             setUser(data.user)
-            localStorage.getItem('token', data.token)
+            localStorage.setItem('token', data.token)
             setShowLogin(false)
           }else{
             toast.error(data.message)
@@ -35,7 +35,7 @@ const Login = () => {
           if(data.success){
             setToken(data.token)
             setUser(data.user)
-            localStorage.getItem('token', data.token)
+            localStorage.setItem('token', data.token)
             setShowLogin(false)
           }else{
             toast.error(data.message)
@@ -78,11 +78,11 @@ const Login = () => {
             <input onChange={e => setPassword(e.target.value)} value={password} className='outline-none text-sm' type="password" placeholder='Password' required />
         </div>
         <p className='text-sm text-blue-600 my-4 cursor-pointer'>Forgot password?</p>
-        <button className='bg-blue-600 w-full text-white py-2 rounded-full'>{state === 'Login' ? 'login' : 'Create account' }</button>
+        <button className='bg-blue-600 w-full text-white py-2 rounded-full cursor-pointer'>{state === 'Login' ? 'login' : 'Create account' }</button>
 
         { state === 'Login' ? <p className='mt-5 text-center'>Don't have an account? <span className='text-blue-600 cursor-pointer' onClick={()=>setState('Sign Up')}>Sign up</span></p>
         :
-        <p className='mt-5 text-center'>Aleady have an account? <span className='text-blue-600 cursor-pointer' onClick={()=> setState("Login")}>Login</span></p>}
+        <p className='mt-5 text-center'>Aleady have an account? <span className='text-blue-600' onClick={()=> setState("Login")}>Login</span></p>}
 
         <img onClick={()=>setShowLogin(false)} src={assets.cross_icon} alt="" className='absolute top-5 right-5 cursor-pointer'/>
       </motion.form>
