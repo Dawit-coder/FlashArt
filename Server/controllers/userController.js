@@ -1,6 +1,8 @@
 import userModel from "../models/userModel.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
+import transactionModel from "../models/transactionModel.js";
+import stripePackage from "stripe";
 
 
 const registerUser = async (req, res)=>{
@@ -65,4 +67,53 @@ const userCredits = async (req, res) =>{
     }
 }
 
-export {registerUser, loginUser, userCredits}
+const stripe = stripePackage(process.env.SECRET_KEY)
+
+const paymentStripe = async(req, res) => {
+    try {
+        const {userId, planId} = req.body;
+        const userData = await userModel.findById(userId)
+
+        if(!userId || !planId){
+            return res.json({success: false, message: "Missing Details"})
+        }
+        const plans = {
+            Basic: { credits: 100, amount: 1000 }, // $10.00 in cents
+            Advanced: { credits: 500, amount: 5000 },
+            Business: { credits: 5000, amount: 25000 }
+        };
+      
+        const selectedPlan = plans[planId];
+        if (!selectedPlan) {
+            return res.json({success: false, message: 'Invalid plan'});
+        }
+      
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: selectedPlan.amount,
+            currency: "usd",
+            metadata: { userId, credits: selectedPlan.credits }
+        });
+     
+    
+        await transactionModel.create({
+            userId,
+            plan: planId,
+            amount: selectedPlan.amount / 100, // Convert to dollars
+            credits: selectedPlan.credits,
+            stripePaymentId: paymentIntent.id,
+            date: Date.now(),
+            payment: true
+        });
+
+        res.json({
+            success: true,
+            clientSecret: paymentIntent.client_secret
+          });
+      
+    } catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message});
+    }
+    }
+        
+export {registerUser, loginUser, userCredits, paymentStripe}
