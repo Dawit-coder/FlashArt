@@ -8,11 +8,16 @@ import Footer from './components/Footer'
 import Login from './components/Login'
 import { AppContext } from './context/AppContext'
 import { ToastContainer, toast } from 'react-toastify';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js'
 
+
+const stripePromise = loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY)
 const App = () => {
 
   const {showLogin} = useContext(AppContext)
   return (
+    <Elements stripe={stripePromise}>
     <div className='px-4 sm:px-10 md:px-14 lg:px-28 min-h-screen bg-gradient-to-b from-teal-50 to-orange-50'>
       <ToastContainer position='bottom-right'/>
       <Navbar />
@@ -24,6 +29,7 @@ const App = () => {
       </Routes>
       <Footer/>
     </div>
+    </Elements>
   )
 }
 

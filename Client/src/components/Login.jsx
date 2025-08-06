@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { assets } from '../assets/assets'
 import { AppContext } from '../context/AppContext'
-import { motion} from 'framer-motion'
+import { motion } from 'framer-motion'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 

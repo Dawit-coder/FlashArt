@@ -71,14 +71,15 @@ const stripe = stripePackage(process.env.SECRET_KEY)
 
 const paymentStripe = async(req, res) => {
     try {
-        const {userId, planId} = req.body;
+        const { planId } = req.body;
+        const userId = req.userId
         const userData = await userModel.findById(userId)
 
         if(!userId || !planId){
             return res.json({success: false, message: "Missing Details"})
         }
         const plans = {
-            Basic: { credits: 100, amount: 1000 }, // $10.00 in cents
+            Basic: { credits: 100, amount: 1000 }, 
             Advanced: { credits: 500, amount: 5000 },
             Business: { credits: 5000, amount: 25000 }
         };
@@ -98,7 +99,7 @@ const paymentStripe = async(req, res) => {
         await transactionModel.create({
             userId,
             plan: planId,
-            amount: selectedPlan.amount / 100, // Convert to dollars
+            amount: selectedPlan.amount / 100, 
             credits: selectedPlan.credits,
             stripePaymentId: paymentIntent.id,
             date: Date.now(),
@@ -117,3 +118,5 @@ const paymentStripe = async(req, res) => {
     }
         
 export {registerUser, loginUser, userCredits, paymentStripe}
+
+

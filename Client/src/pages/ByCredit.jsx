@@ -1,12 +1,25 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { assets, plans } from '../assets/assets'
 import { AppContext } from '../context/AppContext'
 import { motion } from 'framer-motion'
+import StripePaymentModal from '../components/StripePaymentModel'
 
 const ByCredit = () => {
 
-  const {user} = useContext(AppContext)
+  const {user, setShowLogin} = useContext(AppContext)
+  const [selectedPlan, setSelectedPlan] = useState(null);
 
+  useEffect(()=>{
+    if(selectedPlan){
+      document.body.style.overflow = 'hidden';
+    }else{
+      document.body.style.overflow = 'auto'
+    }
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [selectedPlan]);
   return (
     <motion.div 
     initial={{opacity:0.2, y:100}}
@@ -25,9 +38,17 @@ const ByCredit = () => {
               <p className='text-sm'>{item.desc}</p>
               <p className='mt-6'> 
               <span className='text-3xl font-medium'>${item.price} </span>/{item.credits} credits</p>
-              <button className='w-full bg-gray-800 text-white mt-8 text-sm rounded-md py-2.5 min-w-52'>{ user ? 'Purchase' : 'Get Started'}</button>
+              <button className='w-full bg-gray-800 text-white mt-8 text-sm rounded-md py-2.5 min-w-52 cursor-pointer' onClick={()=> user ? setSelectedPlan(item) : setShowLogin(true)}>{ user ? 'Purchase' : 'Get Started'}</button>
             </div>
           ))
+        }
+        {
+          selectedPlan && (
+            <StripePaymentModal
+            plan={selectedPlan}
+            onClose={()=> setSelectedPlan(null)}
+            />
+          )
         }
       </div>
     </motion.div>
