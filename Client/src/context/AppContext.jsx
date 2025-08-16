@@ -37,7 +37,7 @@ const AppContextProvider = (props) => {
                 return data.resultImage
             }else{
                 toast.error(data.message)
-                loadCreditsData
+                loadCreditsData();
                 if(data.creditBalance === 0){
                     navigate('/buy')
                 }
@@ -69,4 +69,4 @@ const AppContextProvider = (props) => {
         </AppContext.Provider>
     )
 }
-export default AppContextProvider
+export default AppContextProvider;

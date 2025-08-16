@@ -88,6 +88,30 @@ const paymentStripe = async(req, res) => {
         if (!selectedPlan) {
             return res.json({success: false, message: 'Invalid plan'});
         }
+
+        
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"],
+            line_items: [
+            {
+                price_data: {
+                currency: "usd",
+                product_data: {
+                name: `${planId} Plan`
+                },
+                unit_amount: selectedPlan.amount,
+                 },
+                quantity: 1,
+            }
+           ],
+            mode: "payment",
+            success_url: `${process.env.CLIENT_URL}/success`,
+            cancel_url: `${process.env.CLIENT_URL}/buy`,
+            metadata: {
+                userId,
+                credits: selectedPlan.credits
+            }
+      });
       
         const paymentIntent = await stripe.paymentIntents.create({
             amount: selectedPlan.amount,
@@ -116,7 +140,7 @@ const paymentStripe = async(req, res) => {
         res.json({success: false, message: error.message});
     }
     }
-        
+
 export {registerUser, loginUser, userCredits, paymentStripe}
 
 
