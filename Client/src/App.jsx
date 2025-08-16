@@ -10,6 +10,7 @@ import { AppContext } from './context/AppContext'
 import { ToastContainer, toast } from 'react-toastify';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js'
+import Success from './pages/Success'
 
 
 const stripePromise = loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY)
